@@ -44,6 +44,7 @@ private:
 	const int idFilm;
 	string numeFilm;
 	rating ratingFilm;
+	sala* sali; //???   vector alocat dinamic de sali - salile in care ruleaza un film
 	int* oreRulare; // vector int alocat dinamic (ex: 10 13 17)
 	static int id;
 public:
