@@ -3,7 +3,7 @@ using namespace std;
 
 // toate id-urile sunt constante int autoincrementabile
 /* un cinema (clasa cinema) are un numar de sali (clasa sala), in care ruleaza filme (clasa film),
-	clientii (clasa client) cumpara un bilet (clasa bilet)
+	clientii (clasa client) cumpara un bilet (clasa bilet) ..
                                  */ 
 
 enum rating {
