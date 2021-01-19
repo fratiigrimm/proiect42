@@ -95,6 +95,8 @@ public:
 	}
 };
 
+void Meniu(cinema c);
+
 class sala {
 private:
 	const int idSala;   // numarul de sala
@@ -108,6 +110,46 @@ public:
 		locuri = NULL;
 		isOcupat = false;
 	}
+
+	sala(int _nrLocuriTotal, int* _locuri) :idSala(++id) {
+		this->nrLocuriTotal = _nrLocuriTotal;
+		this->locuri = new int[_nrLocuriTotal];
+		for (int i = 0; i < _nrLocuriTotal; i++) {
+			this->locuri[i] = _locuri[i];
+		}
+		this->isOcupat = false;
+	}
+
+	sala(const sala& s) :idSala(s.id) {
+		this->nrLocuriTotal = s.nrLocuriTotal;
+		this->locuri = new int[s.nrLocuriTotal];
+		for (int i = 0; i < s.nrLocuriTotal; i++) {
+			this->locuri[i] = s.locuri[i];
+		}
+		this->isOcupat = s.isOcupat;
+	}
+
+	sala& operator=(const sala& s) {
+		this->nrLocuriTotal = s.nrLocuriTotal;
+		this->locuri = new int[s.nrLocuriTotal];
+		for (int i = 0; i < s.nrLocuriTotal; i++) {
+			this->locuri[i] = s.locuri[i];
+		}
+		this->isOcupat = s.isOcupat;
+		return *this;
+	}
+
+	int* getLocuri() {
+		int* copie = new int[nrLocuriTotal];
+		for (int i = 0; i < nrLocuriTotal; i++) {
+			copie[i] = locuri[i];
+		}
+		return copie;
+	}
+
+	int getIdSala() {
+		return idSala;
+	}
 };
 
 class film {
@@ -115,14 +157,55 @@ private:
 	const int idFilm;
 	string numeFilm;
 	rating ratingFilm;
+	int nrSaliRulare;
 	sala* sali; //???   vector alocat dinamic de sali - salile in care ruleaza un film
+	int nrOreRulare;
 	int* oreRulare; // vector int alocat dinamic (ex: 10 13 17)
 	static int id;
 public:
 	film():idFilm(id) {
 		numeFilm = "";
 		ratingFilm = general;
+		nrSaliRulare = 0;
+		sali = nullptr;
 		oreRulare = NULL;
+	}
+
+	film(string _numeFilm, rating _ratingFilm, int _nrSaliRulare, sala* _sali, int _nrOreRulare, int* _oreRulare) : idFilm(id) {
+		this->numeFilm = _numeFilm;
+		this->ratingFilm = _ratingFilm;
+		this->nrSaliRulare = _nrSaliRulare;
+		this->sali = new sala[nrSaliRulare];
+		for (int i = 0; i < _nrSaliRulare; i++) {
+			this->sali[i] = _sali[i];
+		}
+		this->nrOreRulare = _nrOreRulare;
+		this->oreRulare = new int[_nrOreRulare];
+		for (int i = 0; i < _nrOreRulare; i++) {
+			this->oreRulare[i] = _oreRulare[i];
+		}
+	}
+
+	void getSalaRulare() {
+		cout << "Filmul ruleaza ";
+		if (nrSaliRulare == 1) {
+			cout << "intr-o singura sala" << endl;
+		}
+		else {
+			cout << "in "<< nrSaliRulare << " sali" << endl;
+		}
+		if (nrSaliRulare == 1) {
+			cout << "Aceasta este: " << endl;
+		}
+		else {
+			cout << "Acestea sunt: " << endl;
+		}
+		for (int i = 0; i < nrSaliRulare; i++) {
+			cout << "ID Sala: " << sali[i].getIdSala() << endl;
+		}
+		for (int i = 0; i < nrOreRulare; i++) {
+			cout << "La orele " << oreRulare[i] << endl;
+		}
 	}
 };
 
@@ -155,6 +238,65 @@ int client::id = 1000;
 int bilet::id = 100;
 int bilet::anEmitere = 2021;
 
+void meniuFilm(film f) {
+	cout << "****************" << endl;
+	cout << "Detalii: " << endl;
+	f.getSalaRulare();
+	int a = 0;
+	cin >> a;
+}
+
+void programFilme() {
+	cout << "****************" << endl;
+	cout << "1. Lista filme " << endl;
+	cout << "2. Revenire la meniul anterior " << endl;
+	int alegere = 0;
+	cin >> alegere;
+	if (alegere == 1) {
+		cout << "****************" << endl;
+		cout << "1. Die Hard " << endl;
+		cout << "2. Alien " << endl;
+		cout << "3. Home Alone " << endl;
+		int alegere = 0;
+		cin >> alegere;
+		if (alegere == 1) {
+			int l[5] = { 1, 2, 3, 4, 5 };
+			int l1[5] = { 11, 22, 33, 44, 55 };
+			sala s(5, l);
+			sala s1(5, l1);
+
+			sala sali[2] = { s, s1 };
+			int o[2] = { 19, 22 };
+			film f("Die Hard", parental, 2, sali, 2, o);
+			meniuFilm(f);
+		}
+		if (alegere == 2) {
+			int l[5] = { 1, 2, 3, 4, 5 };
+			sala s(5, l);
+
+			sala sali[1] = { s };
+			int o[1] = { 23 };
+			film f("Alien", restricted, 1, sali, 1, o);
+			meniuFilm(f);
+		}
+		if (alegere == 3) {
+			int l[5] = { 1, 2, 3, 4, 5 };
+			sala s(5, l);
+
+			sala sali[1] = { s };
+			int o[3] = { 13, 15, 17 };
+			film f("Home Alone", general, 1, sali, 3, o);
+			meniuFilm(f);
+		}
+		if (alegere == 2) {
+			cout << "Under construction ... " << endl;
+		}
+	}
+	else {
+		cout << "Error ! Alegere invalida - programFilme" << endl;
+	}
+}
+
 void Meniu(cinema c) {
 	cout << "***   Aplicatie POO v1 ***" << endl;
 	cout << "**************************" << endl;
@@ -167,25 +309,38 @@ void Meniu(cinema c) {
 	cout << "Alegeti? 1, 2 sau 3" << endl;
 	int alegere = 0;
 	cin >> alegere;
-	if (alegere == 1) {
-		cout << "Under construction ... "<< endl;
-	}
-	if (alegere == 2) {
+	switch (alegere)
+	{
+	case 1:
 		cout << "Under construction ... " << endl;
-	}
-	if (alegere == 3) {
+		break;
+	case 2:
+		programFilme();
+		cout << endl;
+		break;
+	case 3:
 		cout << endl;
 		cout << c << endl;
-	}
-	else
-	{
-		cout << "Error ! Alegere invalida" << endl;
-	}
+		break;
+	default:
+		cout << "Error ! Alegere invalida - Meniu" << endl;
+		break;
+	}	
 }
 
 int main() {
 	char idLocatie[4] = "AB2";
 	char adresa[20] = "Bd. Magheru nr. 101";
 	cinema c(idLocatie, "Scala", adresa, 2);
+
+	//int l[5] = { 1, 2, 3, 4, 5 };
+	//int l1[5] = { 11, 22, 33, 44, 55 };
+	//sala s(5, l);
+	//sala s1(5, l1);
+
+	//sala sali[2] = { s, s1 };
+	//int o[2] = {19, 22};
+	//film f("Die Hard", parental, 2, sali, 2, o);
+
 	Meniu(c);
 }
